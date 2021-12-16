@@ -153,6 +153,37 @@ const RootMutation = new GraphQLObjectType({
                 authors.push(author)
                 return author
             }
+        },
+        editAuthor: {
+            type: AuthorType,
+            description: "edit autor details by id",
+            args: {
+                id: {type: new GraphQLNonNull(GraphQLInt)},
+                name: {type: new GraphQLNonNull(GraphQLString)}
+            },
+            resolve: (parent, args) => {
+                const authorIndex = authors.findIndex((author => author.id == args.id));
+                if (authorIndex < 0) {
+                    return null
+                }
+                authors[authorIndex].name = args.name
+                return authors[authorIndex]
+            }
+        },
+        deleteAuthor: {
+            type: new GraphQLList(AuthorType),
+            description: "delete autor by id",
+            args: {
+                id: {type: new GraphQLNonNull(GraphQLInt)}
+            },
+            resolve: (parent, args) => {
+                const authorIndex = authors.findIndex((author => author.id == args.id));
+                if (authorIndex < 0) 
+                    return []
+
+                authors.splice(authorIndex, 1)
+                return authors
+            }
         }
     })
 })
