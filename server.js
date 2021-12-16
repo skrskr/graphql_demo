@@ -109,6 +109,39 @@ const RootMutation = new GraphQLObjectType({
                 return book
             }
         },
+        editBook: {
+            type: BookType,
+            description: "edit book details by id",
+            args: {
+                id: {type: new GraphQLNonNull(GraphQLInt)},
+                name: {type: new GraphQLNonNull(GraphQLString)},
+                authorId: {type: new GraphQLNonNull(GraphQLInt)}
+            },
+            resolve: (parent, args) => {
+                const bookIndex = books.findIndex((book => book.id == args.id));
+                if (bookIndex < 0) {
+                    return null
+                }
+                books[bookIndex].name = args.name
+                books[bookIndex].authorId = args.authorId
+                return books[bookIndex]
+            }
+        },
+        deleteBook: {
+            type: new GraphQLList(BookType),
+            description: "delete book by id",
+            args: {
+                id: {type: new GraphQLNonNull(GraphQLInt)}
+            },
+            resolve: (parent, args) => {
+                const bookIndex = books.findIndex((book => book.id == args.id));
+                if (bookIndex < 0) 
+                    return []
+
+                books.splice(bookIndex, 1)
+                return books
+            }
+        },
         addAuthor: {
             type: AuthorType,
             description: "add an author",
